@@ -1,0 +1,18 @@
+.space {
+  width: 600px;
+  height: 600px;
+  border: 1px solid #000;
+}
+.area {
+  float: left;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #000;
+}
+.user {
+  background: #842ce6;
+}
+.blast {
+  background: #8ea7da;
+}
