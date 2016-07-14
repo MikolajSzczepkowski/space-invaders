@@ -16,8 +16,11 @@ $(document).ready(function() {
       bombX = 0,
       bombY = 0,
       shooting = false,
-      speed = 150,
-      invidersMoveSpeed = 1000;
+      speed = 50,
+      bombSpeed = 75,
+      blastSpeed = 100,
+      invidersMoveSpeed = 1500,
+      allowed = true;
 
   // make user
   coordinates(currentX, currentY).addClass("user");
@@ -66,7 +69,7 @@ $(document).ready(function() {
         blastY--;
         coordinates(blastX, blastY).toggleClass("blast");
         $($space).trigger("blastChanged");
-      }, speed);
+      }, blastSpeed);
     }
     shooting = true;
   }
@@ -80,12 +83,13 @@ $(document).ready(function() {
       bombY++;
       coordinates(bombX, bombY).toggleClass("bomb");
       $($space).trigger("bombChanged");
-    }, speed-75);
+    }, bombSpeed);
   }
   function die() {
     window.clearInterval(moveInterval);
     window.clearInterval(bombInterval);
     window.clearInterval(blastInterval);
+    window.clearInterval(invidersMoveInterval);
     $(document).off("keydown");
   }
   function moveInviders(direction) {
@@ -126,9 +130,7 @@ $(document).ready(function() {
         default:
       }
       $inviders = $(".invider");
-    $(".bomb").removeClass("bomb");
-    window.clearInterval(bombInterval);
-    inviderAttack();
+
   }
   function invidersMovingInterval(direction) {
     invidersMoveInterval = setInterval(function() {
@@ -148,6 +150,9 @@ $(document).ready(function() {
       if ($(".area").eq(i).hasClass("invider")) {
         leftEdge = true;
       }
+    }
+    if($(".user").hasClass("invider")) {
+      die();
     }
     if (rightEdge){
       window.clearInterval(invidersMoveInterval);
@@ -174,8 +179,9 @@ $(document).ready(function() {
       shooting = false;
       window.clearInterval(blastInterval);
       coordinates(blastX, blastY).toggleClass("blast");
-      coordinates(blastX, blastY).toggleClass("invider");
+      coordinates(blastX, blastY).removeClass("invider");
       blastY = 18;
+      $inviders = $(".invider");
     }
   });
   // check bomb effect
@@ -213,6 +219,11 @@ $(document).ready(function() {
   });
   // check which key was pressed
   $(document).on("keydown", function(e) {
+    if (event.repeat != undefined) {
+      allowed = !event.repeat;
+    }
+    if (!allowed) return;
+    allowed = false;
       switch (e.which) {
           case 37:
               go("left");
@@ -224,6 +235,17 @@ $(document).ready(function() {
               blast();
               break;
       }
+      return false;
   });
-
+  $(document).on("keyup", function(e) {
+    allowed = true;
+      switch (e.which) {
+          case 37:
+              window.clearInterval(moveInterval);
+              break;
+          case 39:
+              window.clearInterval(moveInterval);
+              break;
+      }
+  });
 });
