@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
 
 html, body {
-  height: 100%;
   background: #000;
 }
 h1,h2,p {
@@ -37,11 +36,37 @@ p span {
   height: 30px;
 }
 .user {
-  width: 0;
+  position: relative;
+  bottom: -15px;
+  width:30px;
+  height: 10px;
+  background: #44ff00;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.user::after {
+  content: "";
+  position:absolute;
+  top: -7px;
+  left: 7px;
   height: 0;
-  border-style: solid;
-  border-width: 0 15px 30px 15px;
-  border-color: transparent transparent #44ff00 transparent;
+  width: 6px;
+  border-bottom: 7px solid #44ff00;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+}
+.user::before {
+  content: "";
+  position: absolute;
+  top:-12px;
+  width: 2px;
+  height:5px;
+  left:14px;
+  background: #44ff00;
 }
 .invider-content {
   display: block;
@@ -80,12 +105,38 @@ p span {
     -1em 4em 0 0 #c400ff,
     1em 4em 0 0 #c400ff,
     2em 4em 0 0 #c400ff;
-
     background: #c400ff;
+    animation: invider 0.8s infinite alternate;
+}
+@keyframes invider {
+  0% {
+    transform: scale(1,1);
+  }
+  100% {
+    transform: scale(1.2,0.8);
+  }
 }
 .blast {
+}
+.blast::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 3px;
+  height: 50%;
+  margin: auto;
   background: #00c489;
 }
 .bomb {
-  background: #5b3627;
+
+}
+.bomb::after {
+  content: "☤";
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  color: #fff;
+  font-size: 30px;
 }
