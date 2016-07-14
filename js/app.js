@@ -1,6 +1,7 @@
 $(document).ready(function() {
   var $space = $(".space"),
       $area = $(".area"),
+      $points = $("#points").find("span"),
       $inviders,
       moveInterval,
       blastInterval,
@@ -18,9 +19,10 @@ $(document).ready(function() {
       shooting = false,
       speed = 50,
       bombSpeed = 75,
-      blastSpeed = 100,
+      blastSpeed = 75,
       invidersMoveSpeed = 1500,
-      allowed = true;
+      allowed = true,
+      points = 0;
 
   // make user
   coordinates(currentX, currentY).addClass("user");
@@ -29,9 +31,11 @@ $(document).ready(function() {
   for (var i = 0; i < 4; i++) {
     for (var j = 2; j < 16; j++) {
       if (j%2 === 0) {
+        var $inviderContent = $("<div>",{"class":"invider-content"});
         coordinates(j, i).addClass("invider")
                           .attr("data-x", j)
-                          .attr("data-y", i);
+                          .attr("data-y", i)
+                          .append($inviderContent);
         $inviders = $(".invider");
       }
     }
@@ -96,35 +100,44 @@ $(document).ready(function() {
       switch (direction) {
         case "right":
           $inviders.each(function() {
-            var inviderX = $(this).attr("data-x"),
+            var $inviderContent = $("<div>",{"class":"invider-content"}),
+                inviderX = $(this).attr("data-x"),
                 inviderY = $(this).attr("data-y");
-            $(this).toggleClass("invider");
+            $(this).toggleClass("invider")
+                    .empty();
             inviderX ++;
             coordinates(inviderX, inviderY).toggleClass("invider")
             .attr("data-x", inviderX)
-            .attr("data-y", inviderY);
+            .attr("data-y", inviderY)
+            .append($inviderContent);
           });
           break;
         case "left":
           $inviders.each(function() {
-            var inviderX = $(this).attr("data-x"),
+            var $inviderContent = $("<div>",{"class":"invider-content"}),
+                inviderX = $(this).attr("data-x"),
                 inviderY = $(this).attr("data-y");
-            $(this).toggleClass("invider");
+            $(this).toggleClass("invider")
+                    .empty();
             inviderX --;
             coordinates(inviderX, inviderY).toggleClass("invider")
             .attr("data-x", inviderX)
-            .attr("data-y", inviderY);
+            .attr("data-y", inviderY)
+            .append($inviderContent);
           });
           break;
         case "down":
           $($inviders.get().reverse()).each(function() {
-            var inviderX = parseInt($(this).attr("data-x")),
+            var $inviderContent = $("<div>",{"class":"invider-content"}),
+                inviderX = parseInt($(this).attr("data-x")),
                 inviderY = parseInt($(this).attr("data-y"));
-            $(this).toggleClass("invider");
+            $(this).toggleClass("invider")
+                    .empty();
             inviderY ++;
             coordinates(inviderX, inviderY).toggleClass("invider")
             .attr("data-x", inviderX)
-            .attr("data-y", inviderY);
+            .attr("data-y", inviderY)
+            .append($inviderContent);
           });
           break;
         default:
@@ -169,7 +182,7 @@ $(document).ready(function() {
   });
   // check blast effect
   $($space).bind("blastChanged", function() {
-    if (blastY === 0) {
+    if (blastY === -1) {
       shooting = false;
       window.clearInterval(blastInterval);
       coordinates(blastX, blastY).toggleClass("blast");
@@ -179,9 +192,12 @@ $(document).ready(function() {
       shooting = false;
       window.clearInterval(blastInterval);
       coordinates(blastX, blastY).toggleClass("blast");
-      coordinates(blastX, blastY).removeClass("invider");
+      coordinates(blastX, blastY).removeClass("invider")
+                                  .empty();
       blastY = 18;
       $inviders = $(".invider");
+      points ++;
+      $points.text(points);
     }
   });
   // check bomb effect
