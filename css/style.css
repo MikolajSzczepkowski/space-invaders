@@ -68,7 +68,7 @@ p span {
   left:14px;
   background: #44ff00;
 }
-.invider-content {
+.invader-content {
   display: block;
   margin: 15px auto;
   width: 1em;
@@ -106,9 +106,9 @@ p span {
     1em 4em 0 0 #c400ff,
     2em 4em 0 0 #c400ff;
     background: #c400ff;
-    animation: invider 0.8s infinite alternate;
+    animation: invader 0.8s infinite alternate;
 }
-@keyframes invider {
+@keyframes invader {
   0% {
     transform: scale(1,1);
   }
@@ -154,7 +154,7 @@ p span {
   text-align: center;
   font-size: 52px;
 }
-.game-over .invider-content {
+.game-over .invader-content {
   display: block;
   margin: 65px auto;
   width: 1em;
@@ -192,7 +192,7 @@ p span {
     1em 4em 0 0 #fff,
     2em 4em 0 0 #fff;
     background: #fff;
-    animation: invider 0.8s infinite alternate;
+    animation: invader 0.8s infinite alternate;
 }
 .game-over h2 {
   margin: 100px auto;

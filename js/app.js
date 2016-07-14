@@ -5,12 +5,12 @@ $(document).ready(function() {
       $pointsEnd = $("#pointsEnd").find("span"),
       $gameOver = $(".game-over"),
       $reload = $("#reload"),
-      $inviders,
+      $invaders,
       moveInterval,
       blastInterval,
       bombInterval,
-      invidersMoveInterval,
-      invidersMoveDownInterval,
+      invadersMoveInterval,
+      invadersMoveDownInterval,
       edgeLeft = false,
       edgeRight = false,
       currentX = 10,
@@ -23,31 +23,31 @@ $(document).ready(function() {
       speed = 50,
       bombSpeed = 75,
       blastSpeed = 50,
-      invidersMoveSpeed = 1500,
+      invadersMoveSpeed = 1500,
       allowed = true,
       points = 0;
 
   // make user
   coordinates(currentX, currentY).addClass("user");
 
-  // make inviders
+  // make invaders
   for (var i = 0; i < 4; i++) {
     for (var j = 2; j < 16; j++) {
       if (j%2 === 0) {
-        var $inviderContent = $("<div>",{"class":"invider-content"});
-        coordinates(j, i).addClass("invider")
+        var $invaderContent = $("<div>",{"class":"invader-content"});
+        coordinates(j, i).addClass("invader")
                           .attr("data-x", j)
                           .attr("data-y", i)
-                          .append($inviderContent);
-        $inviders = $(".invider");
+                          .append($invaderContent);
+        $invaders = $(".invader");
       }
     }
   }
-  // initiate inviders attack
-  inviderAttack();
+  // initiate invaders attack
+  invaderAttack();
 
 // initiate invaders move
-  invidersMovingInterval("right");
+  invadersMovingInterval("right");
 
 
   function coordinates(x, y) {
@@ -80,10 +80,10 @@ $(document).ready(function() {
     }
     shooting = true;
   }
-  function inviderAttack() {
-    var invider = $inviders[Math.floor(Math.random()*($inviders.length-1))];
-    bombX = parseInt($(invider).attr("data-x")),
-    bombY = parseInt($(invider).attr("data-y"));
+  function invaderAttack() {
+    var invader = $invaders[Math.floor(Math.random()*($invaders.length-1))];
+    bombX = parseInt($(invader).attr("data-x")),
+    bombY = parseInt($(invader).attr("data-y"));
     coordinates(bombX, bombY).addClass("bomb");
     bombInterval = setInterval(function() {
       coordinates(bombX, bombY).toggleClass("bomb");
@@ -96,92 +96,92 @@ $(document).ready(function() {
     window.clearInterval(moveInterval);
     window.clearInterval(bombInterval);
     window.clearInterval(blastInterval);
-    window.clearInterval(invidersMoveInterval);
+    window.clearInterval(invadersMoveInterval);
     $(document).off("keydown");
     $pointsEnd.text(points);
     $gameOver.slideDown("slow");
   }
-  function moveInviders(direction) {
+  function moveInvaders(direction) {
       switch (direction) {
         case "right":
-          $inviders.each(function() {
-            var $inviderContent = $("<div>",{"class":"invider-content"}),
-                inviderX = $(this).attr("data-x"),
-                inviderY = $(this).attr("data-y");
-            $(this).toggleClass("invider")
+          $invaders.each(function() {
+            var $invaderContent = $("<div>",{"class":"invader-content"}),
+                invaderX = $(this).attr("data-x"),
+                invaderY = $(this).attr("data-y");
+            $(this).toggleClass("invader")
                     .empty();
-            inviderX ++;
-            coordinates(inviderX, inviderY).toggleClass("invider")
-            .attr("data-x", inviderX)
-            .attr("data-y", inviderY)
-            .append($inviderContent);
+            invaderX ++;
+            coordinates(invaderX, invaderY).toggleClass("invader")
+            .attr("data-x", invaderX)
+            .attr("data-y", invaderY)
+            .append($invaderContent);
           });
           break;
         case "left":
-          $inviders.each(function() {
-            var $inviderContent = $("<div>",{"class":"invider-content"}),
-                inviderX = $(this).attr("data-x"),
-                inviderY = $(this).attr("data-y");
-            $(this).toggleClass("invider")
+          $invaders.each(function() {
+            var $invaderContent = $("<div>",{"class":"invader-content"}),
+                invaderX = $(this).attr("data-x"),
+                invaderY = $(this).attr("data-y");
+            $(this).toggleClass("invader")
                     .empty();
-            inviderX --;
-            coordinates(inviderX, inviderY).toggleClass("invider")
-            .attr("data-x", inviderX)
-            .attr("data-y", inviderY)
-            .append($inviderContent);
+            invaderX --;
+            coordinates(invaderX, invaderY).toggleClass("invader")
+            .attr("data-x", invaderX)
+            .attr("data-y", invaderY)
+            .append($invaderContent);
           });
           break;
         case "down":
-          $($inviders.get().reverse()).each(function() {
-            var $inviderContent = $("<div>",{"class":"invider-content"}),
-                inviderX = parseInt($(this).attr("data-x")),
-                inviderY = parseInt($(this).attr("data-y"));
-            $(this).toggleClass("invider")
+          $($invaders.get().reverse()).each(function() {
+            var $invaderContent = $("<div>",{"class":"invader-content"}),
+                invaderX = parseInt($(this).attr("data-x")),
+                invaderY = parseInt($(this).attr("data-y"));
+            $(this).toggleClass("invader")
                     .empty();
-            inviderY ++;
-            coordinates(inviderX, inviderY).toggleClass("invider")
-            .attr("data-x", inviderX)
-            .attr("data-y", inviderY)
-            .append($inviderContent);
+            invaderY ++;
+            coordinates(invaderX, invaderY).toggleClass("invader")
+            .attr("data-x", invaderX)
+            .attr("data-y", invaderY)
+            .append($invaderContent);
           });
           break;
         default:
       }
-      $inviders = $(".invider");
+      $invaders = $(".invader");
 
   }
-  function invidersMovingInterval(direction) {
-    invidersMoveInterval = setInterval(function() {
-      moveInviders(direction);
-      $($space).trigger("invidersPositionChanged");
-    }, invidersMoveSpeed);
+  function invadersMovingInterval(direction) {
+    invadersMoveInterval = setInterval(function() {
+      moveInvaders(direction);
+      $($space).trigger("invadersPositionChanged");
+    }, invadersMoveSpeed);
   }
-  $($space).bind("invidersPositionChanged", function() {
+  $($space).bind("invadersPositionChanged", function() {
     var rightEdge = false,
         leftEdge = false;
     for (var i = 19; i < $(".area").length; i += 20) {
-      if ($(".area").eq(i).hasClass("invider")) {
+      if ($(".area").eq(i).hasClass("invader")) {
         rightEdge = true;
       }
     }
     for (var i = 0; i < $(".area").length; i += 20) {
-      if ($(".area").eq(i).hasClass("invider")) {
+      if ($(".area").eq(i).hasClass("invader")) {
         leftEdge = true;
       }
     }
-    if($(".user").hasClass("invider")) {
+    if($(".user").hasClass("invader")) {
       die();
     }
     if (rightEdge){
-      window.clearInterval(invidersMoveInterval);
-      setTimeout(function(){moveInviders("down");},invidersMoveSpeed);
-      setTimeout(function(){invidersMovingInterval("left");},invidersMoveSpeed);
+      window.clearInterval(invadersMoveInterval);
+      setTimeout(function(){moveInvaders("down");},invadersMoveSpeed);
+      setTimeout(function(){invadersMovingInterval("left");},invadersMoveSpeed);
       rightEdge = false;
     }
     else if (leftEdge) {
-      window.clearInterval(invidersMoveInterval);
-      setTimeout(function(){moveInviders("down");},invidersMoveSpeed);
-      setTimeout(function(){invidersMovingInterval("right");},invidersMoveSpeed);
+      window.clearInterval(invadersMoveInterval);
+      setTimeout(function(){moveInvaders("down");},invadersMoveSpeed);
+      setTimeout(function(){invadersMovingInterval("right");},invadersMoveSpeed);
       leftEdge = false;
     }
   });
@@ -193,14 +193,14 @@ $(document).ready(function() {
       coordinates(blastX, blastY).toggleClass("blast");
       blastY = 18;
     }
-    if (coordinates(blastX, blastY).hasClass("invider")) {
+    if (coordinates(blastX, blastY).hasClass("invader")) {
       shooting = false;
       window.clearInterval(blastInterval);
       coordinates(blastX, blastY).toggleClass("blast");
-      coordinates(blastX, blastY).removeClass("invider")
+      coordinates(blastX, blastY).removeClass("invader")
                                   .empty();
       blastY = 18;
-      $inviders = $(".invider");
+      $invaders = $(".invader");
       points ++;
       $points.text(points);
     }
@@ -215,7 +215,7 @@ $(document).ready(function() {
     if (bombY === 20) {
       window.clearInterval(bombInterval);
       coordinates(bombX, bombY).toggleClass("bomb");
-      inviderAttack();
+      invaderAttack();
     }
     if (bombX === currentX &&
         bombY === currentY) {
