@@ -5,6 +5,8 @@ $(document).ready(function() {
       moveInterval,
       blastInterval,
       bombInterval,
+      invidersMoveInterval,
+      invidersMoveDownInterval,
       edgeLeft = false,
       edgeRight = false,
       currentX = 10,
@@ -14,14 +16,15 @@ $(document).ready(function() {
       bombX = 0,
       bombY = 0,
       shooting = false,
-      speed = 150;
+      speed = 150,
+      invidersMoveSpeed = 1000;
 
   // make user
   coordinates(currentX, currentY).addClass("user");
 
   // make inviders
   for (var i = 0; i < 4; i++) {
-    for (var j = 0; j < 20; j++) {
+    for (var j = 2; j < 16; j++) {
       if (j%2 === 0) {
         coordinates(j, i).addClass("invider")
                           .attr("data-x", j)
@@ -30,8 +33,12 @@ $(document).ready(function() {
       }
     }
   }
-  // initiate invider attack
+  // initiate inviders attack
   inviderAttack();
+
+// initiate invaders move
+  invidersMovingInterval("right");
+
 
   function coordinates(x, y) {
       return $area.eq(x + (y * 20));
@@ -73,8 +80,88 @@ $(document).ready(function() {
       bombY++;
       coordinates(bombX, bombY).toggleClass("bomb");
       $($space).trigger("bombChanged");
-    }, speed);
+    }, speed-75);
   }
+  function die() {
+    window.clearInterval(moveInterval);
+    window.clearInterval(bombInterval);
+    window.clearInterval(blastInterval);
+    $(document).off("keydown");
+  }
+  function moveInviders(direction) {
+      switch (direction) {
+        case "right":
+          $inviders.each(function() {
+            var inviderX = $(this).attr("data-x"),
+                inviderY = $(this).attr("data-y");
+            $(this).toggleClass("invider");
+            inviderX ++;
+            coordinates(inviderX, inviderY).toggleClass("invider")
+            .attr("data-x", inviderX)
+            .attr("data-y", inviderY);
+          });
+          break;
+        case "left":
+          $inviders.each(function() {
+            var inviderX = $(this).attr("data-x"),
+                inviderY = $(this).attr("data-y");
+            $(this).toggleClass("invider");
+            inviderX --;
+            coordinates(inviderX, inviderY).toggleClass("invider")
+            .attr("data-x", inviderX)
+            .attr("data-y", inviderY);
+          });
+          break;
+        case "down":
+          $($inviders.get().reverse()).each(function() {
+            var inviderX = parseInt($(this).attr("data-x")),
+                inviderY = parseInt($(this).attr("data-y"));
+            $(this).toggleClass("invider");
+            inviderY ++;
+            coordinates(inviderX, inviderY).toggleClass("invider")
+            .attr("data-x", inviderX)
+            .attr("data-y", inviderY);
+          });
+          break;
+        default:
+      }
+      $inviders = $(".invider");
+    $(".bomb").removeClass("bomb");
+    window.clearInterval(bombInterval);
+    inviderAttack();
+  }
+  function invidersMovingInterval(direction) {
+    invidersMoveInterval = setInterval(function() {
+      moveInviders(direction);
+      $($space).trigger("invidersPositionChanged");
+    }, invidersMoveSpeed);
+  }
+  $($space).bind("invidersPositionChanged", function() {
+    var rightEdge = false,
+        leftEdge = false;
+    for (var i = 19; i < $(".area").length; i += 20) {
+      if ($(".area").eq(i).hasClass("invider")) {
+        rightEdge = true;
+      }
+    }
+    for (var i = 0; i < $(".area").length; i += 20) {
+      if ($(".area").eq(i).hasClass("invider")) {
+        leftEdge = true;
+      }
+    }
+    if (rightEdge){
+      window.clearInterval(invidersMoveInterval);
+      setTimeout(function(){moveInviders("down");},invidersMoveSpeed);
+      setTimeout(function(){invidersMovingInterval("left");},invidersMoveSpeed);
+      rightEdge = false;
+    }
+    else if (leftEdge) {
+      window.clearInterval(invidersMoveInterval);
+      setTimeout(function(){moveInviders("down");},invidersMoveSpeed);
+      setTimeout(function(){invidersMovingInterval("right");},invidersMoveSpeed);
+      leftEdge = false;
+    }
+  });
   // check blast effect
   $($space).bind("blastChanged", function() {
     if (blastY === 0) {
@@ -98,10 +185,17 @@ $(document).ready(function() {
       coordinates(bombX, bombY).toggleClass("bomb");
       inviderAttack();
     }
-    if (coordinates(bombX, bombY).hasClass("user")) {
-      window.clearInterval(bombInterval);
-      coordinates(bombX, bombY).toggleClass("bomb");
-      coordinates(bombX, bombY).toggleClass("user");
+    if (bombX === currentX &&
+        bombY === currentY) {
+      die();
+    }
+    else if (bombX === currentX - 1 &&
+        bombY === currentY) {
+      die();
+    }
+    else if (bombX === currentX + 1 &&
+        bombY === currentY) {
+      die();
     }
   });
   // check user move
@@ -118,7 +212,7 @@ $(document).ready(function() {
       }
   });
   // check which key was pressed
-  $(document).keydown(function(e) {
+  $(document).on("keydown", function(e) {
       switch (e.which) {
           case 37:
               go("left");
