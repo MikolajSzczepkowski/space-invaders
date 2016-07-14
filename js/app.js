@@ -2,6 +2,9 @@ $(document).ready(function() {
   var $space = $(".space"),
       $area = $(".area"),
       $points = $("#points").find("span"),
+      $pointsEnd = $("#pointsEnd").find("span"),
+      $gameOver = $(".game-over"),
+      $reload = $("#reload"),
       $inviders,
       moveInterval,
       blastInterval,
@@ -19,7 +22,7 @@ $(document).ready(function() {
       shooting = false,
       speed = 50,
       bombSpeed = 75,
-      blastSpeed = 75,
+      blastSpeed = 50,
       invidersMoveSpeed = 1500,
       allowed = true,
       points = 0;
@@ -95,6 +98,8 @@ $(document).ready(function() {
     window.clearInterval(blastInterval);
     window.clearInterval(invidersMoveInterval);
     $(document).off("keydown");
+    $pointsEnd.text(points);
+    $gameOver.slideDown("slow");
   }
   function moveInviders(direction) {
       switch (direction) {
@@ -199,6 +204,11 @@ $(document).ready(function() {
       points ++;
       $points.text(points);
     }
+    if (points === 28) {
+      die();
+      $pointsEnd.text(points);
+      $gameOver.find("h1").text("congratulations, you have won!");
+    }
   });
   // check bomb effect
   $($space).bind("bombChanged", function() {
@@ -263,5 +273,8 @@ $(document).ready(function() {
               window.clearInterval(moveInterval);
               break;
       }
+  });
+  $reload.on("click", function() {
+    location.reload();
   });
 });
