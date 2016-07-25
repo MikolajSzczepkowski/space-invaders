@@ -263,6 +263,7 @@ $(document).ready(function() {
       }
       return false;
   });
+  //stop moving when key was released
   $(document).on("keyup", function(e) {
     allowed = true;
       switch (e.which) {
