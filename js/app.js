@@ -245,12 +245,13 @@ $(document).ready(function() {
   });
   // check which key was pressed
   $(document).on("keydown", function(e) {
-    if (event.repeat != undefined) {
+    var code = e.keyCode || e.which;
+    if (e.repeat != undefined) {
       allowed = !event.repeat;
     }
     if (!allowed) return;
     allowed = false;
-      switch (e.which) {
+      switch (code) {
           case 37:
               go("left");
               break;
@@ -261,11 +262,11 @@ $(document).ready(function() {
               blast();
               break;
       }
-      return false;
   });
   $(document).on("keyup", function(e) {
+    var code = e.keyCode || e.which;
     allowed = true;
-      switch (e.which) {
+      switch (code) {
           case 37:
               window.clearInterval(moveInterval);
               break;
